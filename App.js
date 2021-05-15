@@ -1,21 +1,45 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import * as React from 'react';
+import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import CreateSong from './src/components/CreateSong';
+// import SearchSong from './src/components/SearchSong';
+// import SongList from './src/components/SongList';
+
+const Tab = createBottomTabNavigator();
+
+function SongList() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Song List Goes Here</Text>
+      </View>
+    );
+  }
+
+function CreateSong() {
+    return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Create Song Goes Here</Text>
+    </View>
+    );
+}
+
+function SearchSong() {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Search Songs Goes Here</Text>
+      </View>
+    );
+  }
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Search" component={SearchSong} />
+        <Tab.Screen name="Home" component={SongList} />
+        <Tab.Screen name="Create" component={CreateSong} />
+      </Tab.Navigator>
+    </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
