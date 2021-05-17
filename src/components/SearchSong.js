@@ -7,6 +7,7 @@ function SearchSong() {
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
   const [searchBySongs, setSearchBySongs] = useState(true)
+  const [searchBarText, setSearchBarText] = useState("Search Songs...")
 
   useEffect(() => {
     fetch('http://localhost:8000/api/songs/')
@@ -56,6 +57,11 @@ function SearchSong() {
 
   const handleSearchChange = (selectSong) => {
     setSearchBySongs(selectSong)
+    if (selectSong) {
+        setSearchBarText("Search Songs...")
+    } else {
+        setSearchBarText("Search Artists...")
+    }
     searchFilterFunction('')
   };
 
@@ -98,7 +104,7 @@ return (
           searchIcon={{ size: 24 }}
           onChangeText={(text) => searchFilterFunction(text)}
           onClear={(text) => searchFilterFunction('')}
-          placeholder="Type Here..."
+          placeholder={searchBarText}
           value={search}
         />
         <View style={styles.searchByButtons}>
