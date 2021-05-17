@@ -133,7 +133,7 @@ const SongList = () => {
     for(var i = 0; i < temp.length; i++) {
       total += temp[i].rating
     };
-    return total/temp.length;
+    return Math.round(total/temp.length);
   };
 
   const numRatings = item => {
