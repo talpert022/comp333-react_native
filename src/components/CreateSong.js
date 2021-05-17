@@ -37,15 +37,43 @@ export default function CreateSong() {
     }
 
     const handleSubmit = event => {
-      var ratingData = JSON.stringify({username: state.username, song: state.song, rating: state.rating});
-      axios.post('http://localhost:8000/api/ratings/', ratingData)
+      {/*
+      var ratingData = {username: state.username, song: state.song, rating: state.rating};
+      console.log("RATINGS = ", ratingData);
+
+      fetch(`http://localhost:8000/api/ratings/`, { method: 'POST',
+        body: JSON.stringify(ratingData),
+        headers: {"Content-type": "application/json"}
+      })
+      .catch((error) => console.error(error))
+      */}
+
+
+      var songData = JSON.stringify({song: state.song, artist: state.artist});
+      console.log("SONG = ", songData);
+
+      fetch(`http://localhost:8000/api/songs/`, { method: 'POST',
+        body: JSON.stringify(songData),
+        headers: {"Content-type": "application/json"}
+      })
+      .catch((error) => console.error(error))
+
+
+      {/*
+      axios.post('http://localhost:8000/api/ratings/', ratingData, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
       .then(res => {
         console.log(res);
         console.log(res.data);
       })
+      .catch((error) => console.log(error))
 
       var songData = JSON.stringify({song: state.song, artist: state.artist});
       axios.post('http://localhost:8000/api/songs/', songData);
+      */}
       
     }
     
