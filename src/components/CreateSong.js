@@ -13,6 +13,9 @@ const styles = StyleSheet.create({
 
 
 export default function CreateSong() {
+
+  const local = 'http://localhost:8000/api/'
+
     var [song, setSong] = React.useState({
       song: ''
     });
@@ -51,12 +54,12 @@ export default function CreateSong() {
       var ratingData = {username: state.username, song: state.song, rating: parseInt(state.rating)};
       console.log("RATINGS = ", ratingData);
 
-      fetch(`http://localhost:8000/api/songs/`, { method: 'POST',
+      fetch(local + `songs/`, { method: 'POST',
         body: JSON.stringify(songData),
         headers: {"Content-type": "application/json"}
       })
       .then(() => 
-        fetch(`http://localhost:8000/api/ratings/`, { method: 'POST',
+        fetch(local + `ratings/`, { method: 'POST',
           body: JSON.stringify(ratingData),
           headers: {"Content-type": "application/json"}
         })
@@ -72,7 +75,7 @@ export default function CreateSong() {
 
     return (
       <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Rate a song!</Text>
+        <Text>Create a song and rate it!</Text>
         <TextInput
           style={styles.input}
           onChangeText={setSong}

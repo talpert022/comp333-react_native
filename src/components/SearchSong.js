@@ -3,6 +3,9 @@ import { SafeAreaView, Text, StyleSheet, View, FlatList, Button } from 'react-na
 import { SearchBar } from 'react-native-elements';
 
 function SearchSong() {
+
+  const local = 'http://localhost:8000/api/'
+
   const [search, setSearch] = useState('');
   const [filteredDataSource, setFilteredDataSource] = useState([]);
   const [masterDataSource, setMasterDataSource] = useState([]);
@@ -10,7 +13,7 @@ function SearchSong() {
   const [searchBarText, setSearchBarText] = useState("Search Songs...")
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/songs/')
+    fetch(local + 'songs/')
       .then((response) => response.json())
       .then((responseJson) => {
         setFilteredDataSource(responseJson);

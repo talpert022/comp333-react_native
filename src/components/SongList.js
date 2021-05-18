@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, FlatList, Text, View, SafeAreaView, TouchableOpacity, TextInput } from 'react-native';
+import { ScrollView, FlatList, Text, View, SafeAreaView, TouchableOpacity, TextInput, Button } from 'react-native';
 import Slider from '@react-native-community/slider';
-import { set } from 'react-native-reanimated';
 
 const SongList = () => {
+
+  const api = 'https://comp333-musicdb.herokuapp.com/api/'
+  const local = 'http://localhost:8000/api/'
 
   const [songList, setSongList] = useState([]);
   const [ratingList, setRatingList] = useState([]);
@@ -19,12 +21,12 @@ const SongList = () => {
   const [user, setUser] = useState("");
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/songs/')
+    fetch(local + 'songs/')
       .then((response) => response.json())
       .then((json) => setSongList(json))
       .then(() =>
 
-    fetch('http://localhost:8000/api/ratings/'))
+    fetch(local + 'ratings/'))
       .then((response1) => response1.json())
       .then((json1) => setRatingList(json1))
       .catch((error) => console.error(error))
@@ -33,9 +35,9 @@ const SongList = () => {
 
   const handleEdit = () => {
     let toSubmit = {song: newSong, artist: newArtist}
-    fetch(`http://localhost:8000/api/songs/${editItem.song}/`, { method: 'DELETE' })
+    fetch(local + `songs/${editItem.song}/`, { method: 'DELETE' })
     .then(() => 
-    fetch(`http://localhost:8000/api/songs/`, { method: 'POST',
+    fetch(local + `songs/`, { method: 'POST',
       body: JSON.stringify(toSubmit),
       headers: {"Content-type": "application/json"}
     }))
@@ -44,7 +46,7 @@ const SongList = () => {
   }
 
   const handleDelete = () => {
-    fetch(`http://localhost:8000/api/songs/${deleteItem.song}/`, { method: 'DELETE' })
+    fetch(local + `songs/${deleteItem.song}/`, { method: 'DELETE' })
     .then()
     .catch((error) => console.error(error))
     .finally(() => setDeleteMode(false))
@@ -55,17 +57,17 @@ const SongList = () => {
     let songDeleted = rateItem
     let deletedRatings = ratingList.filter(obj => obj.song === songDeleted.song && obj.username != user)
     deletedRatings.push(toSubmit)
-    fetch(`http://localhost:8000/api/songs/${songDeleted.song}/`, { method: 'DELETE' })
+    fetch(local + `songs/${songDeleted.song}/`, { method: 'DELETE' })
     .then(() => 
 
-    fetch(`http://localhost:8000/api/songs/`, { method: 'POST',
+    fetch(local + `songs/`, { method: 'POST',
     body: JSON.stringify(songDeleted),
     headers: {"Content-type": "application/json"}
     }))
     .then(() => {
 
       for(let i=0; i<deletedRatings.length; i++){
-        fetch(`http://localhost:8000/api/ratings/`, { method: 'POST',
+        fetch(local + `ratings/`, { method: 'POST',
           body: JSON.stringify(deletedRatings[i]),
           headers: {"Content-type": "application/json"}
         })
@@ -85,9 +87,7 @@ const SongList = () => {
         <Text>Editing {editItem.song}, by: {editItem.artist}</Text>
         <TextInput onChangeText={setNewSong} value={newSong} placeholder="New Song Name"/>
         <TextInput onChangeText={setNewArtist} value={newArtist} placeholder="New Artist Name"/>
-        <TouchableOpacity onPress={handleEdit} style={{backgroundColor: "gray", height:35}}>
-          <Text>Submit</Text>
-        </TouchableOpacity>
+        <Button onPress={handleEdit} title="Submit" />
       </View>
     )
   }else{
@@ -100,13 +100,10 @@ const SongList = () => {
     deleteForm = (
       <View>
         <Text>Are you sure you want to delete {deleteItem.song}, by: {deleteItem.artist}?</Text>
-        <TouchableOpacity onPress={handleDelete} style={{backgroundColor: "crimson", height:35}}>
-          <Text>Delete</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity onPress={() => setDeleteMode(false)} style={{backgroundColor: "gray", height:35}}>
-          <Text>Cancel</Text>
-        </TouchableOpacity>
+        <View style={{flexDirection:'row', padding: 10, justifyContent: 'space-around'}}>
+          <Button onPress={handleDelete} color="crimson" title="Delete" />
+          <Button onPress={() => setDeleteMode(false)} color="gray" title="Cancel" />
+        </View>
       </View>
     )
   }else{
@@ -130,9 +127,7 @@ const SongList = () => {
           step={1}
           onValueChange={sliderValue => setNewRating(sliderValue)}
         />
-        <TouchableOpacity onPress={handleRate} style={{backgroundColor: "gray", height:35}}>
-          <Text>Submit</Text>
-        </TouchableOpacity>
+        <Button onPress={handleRate} style={{backgroundColor: "gray", height:35}} title="Submit"/>
       </View>
     )
   }else{
@@ -161,43 +156,56 @@ const SongList = () => {
   }
 
   const renderItem = ({ item }) => (
-      <View>
-        <Text>{item.song} by: {item.artist}, Average Rating: {getAvg(item)}, over {numRatings(item)} ratings</Text>
-        <View>
-          <TouchableOpacity 
+      <View style={{flex:1}}>
+        <Text style={{padding:10}}>{item.song} by: {item.artist}, Average Rating: {getAvg(item)}, over {numRatings(item)} ratings</Text>
+        <View style={{flexDirection:'row', padding: 10, justifyContent: 'space-around'}}>
+          <Button 
             onPress={() => { setEditItem(item), setEditMode(true), setDeleteMode(false), setRateMode(false) }} 
-            style={{backgroundColor: "gray", height:35}}>
-            <Text>Edit</Text>
-          </TouchableOpacity>
+            color="gray"
+            title="Edit"
+          />
 
-          <TouchableOpacity 
+          <Button 
             onPress={() => { setDeleteItem(item), setEditMode(false), setDeleteMode(true), setRateMode(false) }} 
-            style={{backgroundColor: "crimson", height:35}}>
-            <Text>Delete</Text>
-          </TouchableOpacity>
+            color="crimson"
+            title="Delete"
+          />
 
-          <TouchableOpacity 
+          <Button 
             onPress={() => { setRateItem(item), setEditMode(false), setDeleteMode(false), setRateMode(true) }} 
-            style={{backgroundColor: "lightblue", height:35}}>
-            <Text>Rate</Text>
-          </TouchableOpacity>
+            title="Rate"
+          />
         </View>
       </View>
   )
 
+  const ItemSeparatorView = () => {
+    return (
+      // Flat List Item Separator
+      <View
+        style={{
+          height: 0.5,
+          width: '100%',
+          backgroundColor: '#C8C8C8',
+        }}
+      />
+    );
+  };
+
   return (
     <ScrollView>
       <SafeAreaView>
-        <FlatList
-          data={ songList }
-          renderItem={ renderItem }
-          keyExtractor={ item => item.song }
-        />
         <View>
           {editForm}
           {deleteForm}
           {rateForm}
         </View>
+        <FlatList
+          data={ songList }
+          renderItem={ renderItem }
+          keyExtractor={ item => item.song }
+          ItemSeparatorComponent={ItemSeparatorView}
+        />
       </SafeAreaView>
     </ScrollView>
   );
